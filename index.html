@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Africa Investment Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <style>
+  *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+  }
+
+  body{
+    background:#020817;
+    color:white;
+    overflow-x:hidden;
+  }
+
+  .container{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* SIDEBAR */
+
+  .sidebar{
+    width:220px;
+    background:#061225;
+    border-right:1px solid rgba(255,255,255,0.05);
+    padding:18px 16px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:30px;
+  }
+
+  .logo-icon{
+    width:42px;
+    height:42px;
+    background:linear-gradient(135deg,#2563eb,#00aaff);
+    clip-path: polygon(50% 0%, 100% 100%, 75% 100%, 62% 72%, 38% 72%, 25% 100%, 0% 100%);
+    border-radius:10px;
+  }
+
+  .logo h1{
+    font-size:16px;
+    line-height:1.1;
+    font-weight:800;
+  }
+
+  .logo span{
+    color:#3b82f6;
+    font-size:11px;
+    letter-spacing:2px;
+  }
+
+  .menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .menu-item{
+    padding:12px 14px;
+    border-radius:14px;
+    color:#d1d5db;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:15px;
+  }
+
+  .menu-item.active,
+  .menu-item:hover{
+    background:#0d2a57;
+    color:white;
+  }
+
+  /* SUPPORT */
+
+  .support-box{
+    background:#08111f;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:18px;
+    border-radius:18px;
+  }
+
+  .support-box h3{
+    font-size:15px;
+  }
+
+  .support-btn{
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#0f4fff;
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  /* MAIN */
+
+  .main{
+    flex:1;
+    padding:18px;
+  }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+  }
+
+  .welcome h2{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+
+  .welcome p{
+    font-size:14px;
+    color:#cbd5e1;
+  }
+
+  .top-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+
+  .verified{
+    background:#072d16;
+    color:#4ade80;
+    padding:10px 14px;
+    border-radius:12px;
+    font-weight:600;
+    border:1px solid rgba(74,222,128,0.2);
+    font-size:14px;
+  }
+
+  /* PHOTO PROFIL */
+
+  .profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#08111f;
+    padding:8px 12px;
+    border-radius:14px;
+  }
+
+  .profile img{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    object-fit:cover;
+  }
+
+  .profile div{
+    font-size:13px;
+  }
+
+  /* CARDS */
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:18px;
+  }
+
+  .card{
+    background:#08111f;
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:18px;
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .card::before{
+    content:'';
+    position:absolute;
+    width:150px;
+    height:150px;
+    background:radial-gradient(circle,rgba(59,130,246,0.15),transparent);
+    top:-70px;
+    right:-70px;
+  }
+
+  .card-title{
+    color:#d1d5db;
+    font-size:14px;
+    margin-bottom:12px;
+  }
+
+  .card-value{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:16px;
+  }
+
+  .usd{
+    font-size:14px;
+    font-weight:600;
+  }
+
+  .bottom-info{
+    display:flex;
+    justify-content:space-between;
+    color:#9ca3af;
+    font-size:13px;
+  }
+
+  .highlight{
+    color:#00a2ff;
+    font-weight:700;
+  }
+
+  .green{
+    color:#00ff66;
+  }
+
+  .red{
+    color:#ff3b3b;
+  }
+
+  .purple{
+    color:#d946ef;
+  }
+
+  /* CONTENT */
+
+  .content-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+    margin-bottom:18px;
+  }
+
+  .chart-box,
+  .activity-box,
+  .history-box{
+    background:#08111f;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.05);
+    padding:18px;
+  }
+
+  .box-title{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:14px;
+  }
+
+  .activity-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    font-size:13px;
+  }
+
+  .activity-item:last-child{
+    border:none;
+  }
+
+  /* TABLE */
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+
+  th{
+    text-align:left;
+    padding:14px 8px;
+    color:#94a3b8;
+    font-size:12px;
+    font-weight:500;
+  }
+
+  td{
+    padding:16px 8px;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:13px;
+  }
+
+  .status{
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:700;
+    display:inline-block;
+  }
+
+  .status.green{
+    background:#063b1c;
+    color:#00ff66;
+  }
+
+  .status.blue{
+    background:#0b2e68;
+    color:#4ea1ff;
+  }
+
+  /* FOOTER */
+
+  .footer-security{
+    margin-top:18px;
+    background:#08111f;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.05);
+    padding:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+
+  .security-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .security-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    background:#072d16;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#00ff66;
+    font-size:16px;
+  }
+
+  @media(max-width:1200px){
+    .cards{
+      grid-template-columns:repeat(2,1fr);
+    }
+
+    .content-grid{
+      grid-template-columns:1fr;
+    }
+  }
+
+  @media(max-width:900px){
+    .container{
+      flex-direction:column;
+    }
+
+    .sidebar{
+      width:100%;
+    }
+
+    .cards{
+      grid-template-columns:1fr;
+    }
+
+    .welcome h2{
+      font-size:20px;
+    }
+
+    .topbar{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:16px;
+    }
+  }
+
+  /* POPUP */
+
+.popup-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  backdrop-filter:blur(4px);
+}
+
+.popup-box{
+  width:400px;
+  background:#08111f;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:30px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(0,0,0,0.5);
+}
+
+.popup-box h2{
+  font-size:24px;
+  margin-bottom:15px;
+  color:#ff3b3b;
+}
+
+.popup-box p{
+  color:#cbd5e1;
+  line-height:1.7;
+  margin-bottom:25px;
+  font-size:15px;
+}
+
+.popup-box button{
+  background:#0f4fff;
+  color:white;
+  border:none;
+  padding:14px 24px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <aside class="sidebar">
+
+    <div>
+
+      <div class="logo">
+        <div class="logo-icon"></div>
+
+        <div>
+          <h1>AFRICA</h1>
+          <span>INVESTMENT</span>
+        </div>
+      </div>
+
+      <div class="menu">
+        <div class="menu-item active"> Tableau de bord</div>
+        <div class="menu-item"> Investissements</div>
+   <a href="retrait.html" class="menu-item"> Retraits </a>
+        <div class="menu-item"> Portefeuille</div>
+        <div class="menu-item"> Historique</div>
+        <div class="menu-item"> Parrainage</div>
+        <div class="menu-item"> Paramètres</div>
+        <div class="menu-item"> Support</div>
+      </div>
+
+    </div>
+
+    <div class="support-box">
+      <h3>Besoin d’aide ?</h3>
+
+      <p style="margin-top:10px;color:#94a3b8;line-height:1.7;">
+        Notre équipe est disponible 24/7 pour vous aider.
+      </p>
+
+      <button class="support-btn">
+        Contacter le support
+      </button>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <div class="welcome">
+        <h2>Bienvenue, Ngueyo Lucie 👋</h2>
+        <p>+237 698 377 998</p>
+      </div>
+
+      <div class="top-right">
+
+        <div class="verified">
+          ✅ Compte Vérifié
+        </div>
+
+        <div class="profile">
+          <!-- <img src="C:\Users\Futur\Desktop\inv\invest.jpeg" alt=""> -->
+          <div>
+            <div style="font-weight:700;">Ngueyo Fopechi Lucie</div>
+            <div style="color:#facc15;margin-top:4px;">
+              Compte Premium
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-title">
+          Investissement total
+        </div>
+
+        <div class="card-value">
+          1 300 000  <span class="usd">FCFA</span>
+        </div>
+
+        <div class="bottom-info">
+          <span>Disponible</span>
+          <span class="highlight">1 300 000 FCFA </span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          Gains totaux
+        </div>
+
+        <div class="card-value">
+          2 695 500  <span class="usd">FCFA</span>
+        </div>
+
+        <div class="bottom-info">
+          <span>Total gains</span>
+          <span class="purple">2 695 500 FCFA</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          Solde du compte
+        </div>
+
+        <div class="card-value">
+          2 695 500  <span class="usd">FCFA</span>
+        </div>
+
+        <div class="bottom-info">
+          <span>Solde actuel</span>
+          <span class="green">2 695 500 FCFA</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          Statut du compte
+        </div>
+
+        <div class="card-value red">
+  INACTIF
+</div>
+
+        <div class="bottom-info">
+          <span>Niveau</span>
+          <span style="color:#facc15;">
+            Premium
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="content-grid">
+
+      <div class="chart-box">
+
+        <div class="box-title">
+          Évolution des gains
+        </div>
+
+        <canvas id="chart"></canvas>
+
+      </div>
+
+      <div class="activity-box">
+
+        <div class="box-title">
+          Activité récente
+        </div>
+
+        <div class="activity-item">
+          <div>
+            <div style="font-weight:700;">
+              Retrait effectué
+            </div>
+
+            <div style="margin-top:10px;color:#94a3b8;">
+              Orange Money Cameroun
+            </div>
+          </div>
+
+          <div class="red" style="font-weight:700;">
+    -150 000 FCFA
+</div>
+        </div>
+
+        <div class="activity-item">
+          <div>
+            <div style="font-weight:700;">
+              Investissement - Pack Gold
+            </div>
+
+            <div style="margin-top:10px;color:#94a3b8;">
+              08 Juillet 2026
+            </div>
+          </div>
+
+          <div class="green" style="font-weight:700;">
+           1 300 000 FCFA
+          </div>
+        </div>
+
+        <div class="activity-item">
+          <div>
+            <div style="font-weight:700;">
+              Bonus de parrainage
+            </div>
+
+            <div style="margin-top:10px;color:#94a3b8;">
+              09 Juillet 2026
+            </div>
+          </div>
+
+          <div class="green" style="font-weight:700;">
+            +95 500 FCFA
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="history-box">
+
+      <div class="box-title">
+        Historique des investissements
+      </div>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>ID Transaction</th>
+            <th>Pack</th>
+            <th>Montant</th>
+            <th>Date</th>
+            <th>Durée</th>
+            <th>Gains</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>INV-2481</td>
+            <td>Pack Gold</td>
+            <td>1 300 000 FCFA</td>
+           <td>08 Juillet 2026</td>
+            <td>07 Jours</td>
+            <td>2 695 500 FCFA</td>
+            <td>
+              <span class="status green">
+                TERMINÉ
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>INV-2482</td>
+            <td>Pack Silver</td>
+            <td>850 000 FCFA</td>
+            <td>09 Juillet 2026</td>
+            <td>05 Jours</td>
+            <td>1 350 000 FCFA</td>
+            <td>
+              <span class="status blue">
+                ACTIF
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>INV-2483</td>
+            <td>Pack Bronze</td>
+            <td>500 000 FCFA</td>
+            <td>10 Juillet 2026</td>
+            <td>03 Jours</td>
+            <td>720 000 FCFA</td>
+            <td>
+              <span class="status green">
+                TERMINÉ
+              </span>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="footer-security">
+
+      <div class="security-item">
+        <div class="security-icon">🛡️</div>
+
+        <div>
+          <div style="font-weight:700;">
+            Plateforme sécurisée & certifiée
+          </div>
+
+          <div style="color:#94a3b8;margin-top:5px;">
+            Vos fonds sont protégés.
+          </div>
+        </div>
+      </div>
+
+      <div class="security-item">
+        <div class="security-icon">🔒</div>
+
+        <div>
+          <div style="font-weight:700;">
+            SSL Sécurisé
+          </div>
+
+          <div style="color:#94a3b8;margin-top:5px;">
+            Cryptage 256-bit
+          </div>
+        </div>
+      </div>
+
+      <div class="security-item">
+        <div class="security-icon">🧾</div>
+
+        <div>
+          <div style="font-weight:700;">
+            Protection des données
+          </div>
+
+          <div style="color:#94a3b8;margin-top:5px;">
+            Conforme RGPD
+          </div>
+        </div>
+      </div>
+
+      <div class="security-item">
+        <div class="security-icon">📞</div>
+
+        <div>
+          <div style="font-weight:700;">
+            Support 24/7
+          </div>
+
+          <div style="color:#94a3b8;margin-top:5px;">
+            Toujours disponible
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE RETRAIT -->
+
+<div class="history-box" id="retraitPage" style="display:none;">
+
+  <div class="box-title">
+    Effectuer un retrait
+  </div>
+
+  <!-- SOLDE -->
+
+  <div style="
+    margin-top:20px;
+    background:#020817;
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:18px;
+    padding:20px;
+  ">
+
+    <div style="color:#94a3b8;font-size:14px;">
+      Solde disponible
+    </div>
+
+    <div id="soldeDisponible" style="
+      font-size:34px;
+      font-weight:800;
+      margin-top:10px;
+      color:#00ff66;
+    ">
+     2 695 500 FCFA
+    </div>
+
+  </div>
+
+  <!-- FORMULAIRE -->
+
+  <div style="margin-top:30px;">
+
+    <!-- METHODE -->
+
+    <label style="
+      display:block;
+      margin-bottom:10px;
+      color:#94a3b8;
+      font-size:14px;
+    ">
+      Méthode de retrait
+    </label>
+
+    <select id="methodeRetrait" style="
+      width:100%;
+      background:#020817;
+      border:1px solid rgba(255,255,255,0.08);
+      color:white;
+      padding:16px;
+      border-radius:14px;
+      outline:none;
+      font-size:15px;
+      margin-bottom:20px;
+    ">
+
+      <option value="Orange Money Cameroun">
+    Orange Money Cameroun
+</option>
+
+    </select>
+
+    <!-- NUMERO -->
+
+    <label style="
+      display:block;
+      margin-bottom:10px;
+      color:#94a3b8;
+      font-size:14px;
+    ">
+      Numéro de téléphone
+    </label>
+
+    <input
+      type="text"
+      id="numeroRetrait"
+      placeholder="Entrez votre numéro"
+      style="
+        width:100%;
+        background:#020817;
+        border:1px solid rgba(255,255,255,0.08);
+        color:white;
+        padding:16px;
+        border-radius:14px;
+        outline:none;
+        font-size:15px;
+        margin-bottom:20px;
+      "
+    >
+
+    <!-- MONTANT -->
+
+    <label style="
+      display:block;
+      margin-bottom:10px;
+      color:#94a3b8;
+      font-size:14px;
+    ">
+      Montant du retrait
+    </label>
+
+    <input
+      type="number"
+      id="montantRetrait"
+      placeholder="Entrez le montant"
+      style="
+        width:100%;
+        background:#020817;
+        border:1px solid rgba(255,255,255,0.08);
+        color:white;
+        padding:16px;
+        border-radius:14px;
+        outline:none;
+        font-size:15px;
+      "
+    >
+
+    <div id="verificationMessage" style="
+      margin-top:15px;
+      font-size:14px;
+      color:#94a3b8;
+    "></div>
+
+    <button
+      id="validerRetrait"
+      style="
+        margin-top:25px;
+        width:100%;
+        background:#0f4fff;
+        border:none;
+        padding:16px;
+        color:white;
+        border-radius:14px;
+        font-size:15px;
+        font-weight:600;
+        cursor:pointer;
+      "
+    >
+      Valider le retrait
+    </button>
+
+  </div>
+
+</div>
+
+<!-- POPUP -->
+
+<div class="popup-overlay" id="popupOverlay">
+
+  <div class="popup-box">
+
+    <h2>Retrait en attente</h2>
+
+    <p>
+      Votre compte est actuellement <b>INACTIF</b>.<br><br>
+
+Veuillez contacter votre responsable afin de procéder à l'activation de votre compte avant de pouvoir effectuer un retrait via Orange Money Cameroun.
+    </p>
+
+    <button onclick="closePopup()">
+      Compris
+    </button>
+
+  </div>
+
+</div>
+
+  </main>
+
+</div>
+
+<script>
+
+const ctx = document.getElementById('chart');
+
+/* CHART */
+
+new Chart(ctx, {
+    type: 'line',
+
+    data: {
+        labels: [
+          '08 Juil',
+'09 Juil',
+'10 Juil',
+'11 Juil',
+'12 Juil',
+'13 Juil',
+'14 Juil',
+'15 Juil'
+        ],
+
+        datasets: [{
+            label: 'Gains',
+            data: [1300000,1450000,1600000,1820000,2050000,2290000,2510000,2695500],
+
+            borderColor:'#1d8fff',
+
+            backgroundColor:'rgba(29,143,255,0.15)',
+
+            tension:0.4,
+
+            fill:true,
+
+            pointBackgroundColor:'#1d8fff',
+
+            pointRadius:5
+        }]
+    },
+
+    options: {
+        responsive:true,
+
+        plugins:{
+            legend:{
+                display:false
+            }
+        },
+
+        scales:{
+            x:{
+                ticks:{
+                    color:'#94a3b8'
+                },
+
+                grid:{
+                    color:'rgba(255,255,255,0.05)'
+                }
+            },
+
+            y:{
+                ticks:{
+                    color:'#94a3b8'
+                },
+
+                grid:{
+                    color:'rgba(255,255,255,0.05)'
+                }
+            }
+        }
+    }
+});
+
+/* RETRAIT */
+
+const retraitBtn = document.getElementById('retraitBtn');
+
+const retraitPage = document.getElementById('retraitPage');
+
+const montantRetrait = document.getElementById('montantRetrait');
+
+const numeroRetrait = document.getElementById('numeroRetrait');
+
+const verificationMessage = document.getElementById('verificationMessage');
+
+const validerRetrait = document.getElementById('validerRetrait');
+
+const popupOverlay = document.getElementById('popupOverlay');
+
+let soldeDisponible = 2695500;
+
+/* OUVRIR PAGE RETRAIT */
+
+retraitBtn.addEventListener('click', () => {
+
+  retraitPage.style.display = 'block';
+
+  retraitPage.scrollIntoView({
+    behavior:'smooth'
+  });
+
+});
+
+/* VERIFICATION SOLDE */
+
+montantRetrait.addEventListener('input', () => {
+
+  let montant = parseFloat(montantRetrait.value);
+
+  if(isNaN(montant)){
+
+    verificationMessage.innerHTML = '';
+
+    return;
+
+  }
+
+  if(montant > soldeDisponible){
+
+    verificationMessage.innerHTML =
+      "❌ Solde insuffisant pour effectuer ce retrait.";
+
+    verificationMessage.style.color = '#ff3b3b';
+
+  }else{
+
+    verificationMessage.innerHTML =
+      "✅ Solde disponible. Vous pouvez continuer.";
+
+    verificationMessage.style.color = '#00ff66';
+
+  }
+
+});
+
+/* VALIDATION RETRAIT */
+
+validerRetrait.addEventListener('click', () => {
+
+  let montant = parseFloat(montantRetrait.value);
+
+  let numero = numeroRetrait.value.trim();
+
+  if(numero === ''){
+
+    verificationMessage.innerHTML =
+      "❌ Veuillez entrer votre numéro de téléphone.";
+
+    verificationMessage.style.color = '#ff3b3b';
+
+    return;
+
+  }
+
+  if(isNaN(montant) || montant <= 0){
+
+    verificationMessage.innerHTML =
+      "❌ Veuillez entrer un montant valide.";
+
+    verificationMessage.style.color = '#ff3b3b';
+
+    return;
+
+  }
+
+  if(montant > soldeDisponible){
+
+    verificationMessage.innerHTML =
+      "❌ Votre solde est insuffisant.";
+
+    verificationMessage.style.color = '#ff3b3b';
+
+    return;
+
+  }
+
+  /* POPUP */
+
+  popupOverlay.style.display = 'flex';
+
+});
+
+/* FERMER POPUP */
+
+function closePopup(){
+
+  popupOverlay.style.display = 'none';
+
+}
+
+</script>
+
+</body>
+</html>
